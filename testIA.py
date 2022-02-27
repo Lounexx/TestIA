@@ -10,21 +10,18 @@ y = y.reshape((y.shape[0], 1))
 
 
 
-def initialisation(X):
+def init(X):
     W = np.random.randn(X.shape[1], 1)
     b = np.random.randn(1)
     return (W, b)
 
 
+
+# Détermine un modèle suivant
 def model(X, W, b):
     Z = X.dot(W) + b
     A = 1 / (1 + np.exp(-Z))
     return A
-
-
-# Calcul le taux d'erreur comparé au résultat attendu
-def log_loss(A, y):
-    return 1 / len(y) * np.sum(-y * np.log(A) - (1 - y) * np.log(1 - A))
 
 
 
@@ -34,27 +31,32 @@ def gradients(A, X, y):
     return (dW, db)
 
 
+# Modifie les valeurs de W et b en fonction de l'apprentissage 
+# de la vitesse d'apprentissage
 
 def update(dW, db, W, b, learning_rate):
     W = W - learning_rate * dW
     b = b - learning_rate * db
     return (W, b)
 
-
+# Détermine une prédiction suivant le modèle
 def prediction(X, W, b):
     A = model(X, W, b)
     return A >= 0.5
 
-    
+# Calcul le taux d'erreur comparé au résultat attendu
+def fonctionCout(A, y):
+    return 1 / len(y) * np.sum(-y * np.log(A) - (1 - y) * np.log(1 - A))
+
 
 def artificial_neuron(X, y, learning_rate = 0.1, n_iter = 100):
-    W, b = initialisation(X)
+    W, b = init(X)
 
     Loss = []
     # Entraînement des neurones sur le modèle pour un nombre d'itération
     for i in range(n_iter):
         A = model(X, W, b)
-        Loss.append(log_loss(A, y))
+        Loss.append(fonctionCout(A, y))
         dW, db = gradients(A, X, y)
         W, b = update(dW, db, W, b, learning_rate)
 
